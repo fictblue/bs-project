@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}Achievements - BS{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── HEADER ── */
+    .ach-header {
+        padding: 48px 0 40px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 40px;
+    }
+
+    .ach-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .ach-header-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(32px, 5vw, 52px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1.5px;
+        line-height: 1;
+    }
+
+    .ach-header-sub {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+    /* ── FILTER ── */
+    .ach-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 32px;
+    }
+
+    .ach-filter {
+        font-size: 12px;
+        padding: 7px 14px;
+        border-radius: 6px;
+        border: 0.5px solid var(--border-mid);
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s;
+        background: transparent;
+        letter-spacing: 0.3px;
+    }
+
+    .ach-filter:hover {
+        background: var(--bg-surface);
+        color: var(--text-secondary);
+        border-color: var(--accent-dim);
+    }
+
+    .ach-filter.active {
+        background: var(--accent-dim);
+        border-color: var(--accent-dim);
+        color: var(--accent-glow);
+    }
+
+    /* ── GRID ── */
+    .ach-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* ── CARD ── */
+    .ach-card {
+        background: var(--bg-surface);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        padding: 28px 24px;
+        transition: background 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ach-card:hover { background: var(--bg-raised); }
+
+    /* ghost icon di background */
+    .ach-card-ghost {
+        position: absolute;
+        top: -8px;
+        right: -4px;
+        font-size: 96px;
+        opacity: 0.04;
+        pointer-events: none;
+        user-select: none;
+        line-height: 1;
+    }
+
+    .ach-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .ach-icon {
+        font-size: 40px;
+        line-height: 1;
+    }
+
+    .ach-badge {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .cat-mvp_sports { background: #0d1f12; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .cat-raja_mabar { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .cat-legend     { background: #1a1508; color: #c4b23a; border: 0.5px solid #3a2e10; }
+    .cat-chaotic    { background: #1f0a0a; color: #c46a6a; border: 0.5px solid #3a1010; }
+    .cat-talent     { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .ach-card-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+        margin-bottom: 8px;
+    }
+
+    .ach-card-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.65;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .ach-card-footer {
+        padding-top: 14px;
+        border-top: 0.5px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .ach-recipient {
+        font-family: 'Syne', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent);
+    }
+
+    .ach-date {
+        font-size: 10px;
+        color: var(--text-muted);
+        opacity: 0.45;
+        text-align: right;
+    }
+
+    /* ── EMPTY ── */
+    .ach-empty {
+        text-align: center;
+        padding: 80px 32px;
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+    }
+
+    .ach-empty i {
+        font-size: 40px;
+        color: var(--text-muted);
+        opacity: 0.15;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .ach-empty-text {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        color: var(--text-muted);
+        opacity: 0.35;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── HEADER ── -->
+<div class="ach-header">
+    <div class="ach-eyebrow">Baraya Salawasna</div>
+    <h1 class="ach-header-title">BS<br>Achievements</h1>
+    <p class="ach-header-sub">Pencapaian-pencapaian gokil member BS.</p>
+</div>
+
+<!-- ── FILTER ── -->
+<div class="ach-filters">
+    <a href="{% url 'achievement_list' %}"
+       class="ach-filter {% if not category_filter %}active{% endif %}">
+        Semua
+    </a>
+    <a href="?category=mvp_sports"
+       class="ach-filter {% if category_filter == 'mvp_sports' %}active{% endif %}">
+        MVP Olahraga
+    </a>
+    <a href="?category=raja_mabar"
+       class="ach-filter {% if category_filter == 'raja_mabar' %}active{% endif %}">
+        Raja Mabar
+    </a>
+    <a href="?category=legend"
+       class="ach-filter {% if category_filter == 'legend' %}active{% endif %}">
+        Legend
+    </a>
+    <a href="?category=chaotic"
+       class="ach-filter {% if category_filter == 'chaotic' %}active{% endif %}">
+        Most Chaotic
+    </a>
+    <a href="?category=talent"
+       class="ach-filter {% if category_filter == 'talent' %}active{% endif %}">
+        Talent
+    </a>
+</div>
+
+<!-- ── GRID ── -->
+{% if achievements %}
+<div class="ach-grid">
+    {% for achievement in achievements %}
+    <a href="{% url 'achievement_detail' achievement.pk %}" class="ach-card">
+
+        <!-- ghost icon -->
+        <div class="ach-card-ghost" aria-hidden="true">{{ achievement.icon|default:"🏆" }}</div>
+
+        <div class="ach-card-top">
+            <div class="ach-icon">{{ achievement.icon|default:"🏆" }}</div>
+            <span class="ach-badge cat-{{ achievement.category }}">
+                {{ achievement.get_category_display }}
+            </span>
+        </div>
+
+        <div class="ach-card-title">{{ achievement.title }}</div>
+        <div class="ach-card-desc">{{ achievement.description }}</div>
+
+        <div class="ach-card-footer">
+            <div class="ach-recipient">{{ achievement.recipient }}</div>
+            <div class="ach-date">{{ achievement.date_achieved|date:"d F Y" }}</div>
+        </div>
+
+    </a>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="ach-empty">
+    <i class="ti ti-trophy-off" aria-hidden="true"></i>
+    <div class="ach-empty-text">Belum ada achievement.</div>
+</div>
+{% endif %}
+
+{% endblock %}

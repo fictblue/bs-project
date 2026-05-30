@@ -1,0 +1,1002 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - BS{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+        position: relative;
+        padding: 64px 0 56px;
+        border-bottom: 0.5px solid var(--border);
+        overflow: hidden;
+    }
+
+    .hero-ghost {
+        position: absolute;
+        top: 50%;
+        left: 39%;
+        transform: translateY(-50%);
+        font-family: 'Syne', sans-serif;
+        font-size: 220px;
+        font-weight: 700;
+        color: #fff;
+        opacity: 0.018;
+        letter-spacing: -10px;
+        pointer-events: none;
+        user-select: none;
+        line-height: 1;
+    }
+
+    .hero-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .hero-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(40px, 6vw, 64px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -2px;
+        line-height: 1.05;
+        margin-bottom: 14px;
+    }
+
+    .hero-tagline {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-style: italic;
+        margin-bottom: 40px;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 40px;
+    }
+
+    .hero-stat-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+    }
+
+    .hero-stat-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    /* ══════════════════════════════════════
+       PHOTO SLIDESHOW
+    ══════════════════════════════════════ */
+    .photo-section {
+        position: relative;
+        height: 340px;
+        overflow: hidden;
+        border-bottom: 0.5px solid var(--border);
+        background: var(--bg-surface);
+    }
+
+    .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.4s ease;
+    }
+
+    .slide.active { opacity: 1; }
+
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.4) saturate(0.8);
+        transform: scale(1.04);
+        transition: transform 6s ease;
+    }
+
+    .slide.active img { transform: scale(1); }
+
+    .slide-overlay-left {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(12,12,16,0.95) 0%, rgba(12,12,16,0.55) 40%, transparent 75%);
+    }
+
+    .slide-overlay-bottom {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 50%, rgba(12,12,16,0.7) 100%);
+    }
+
+    .slide-content {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        padding: 0 32px;
+        max-width: 480px;
+    }
+
+    .slide-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .slide-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+        transition: opacity 0.5s ease;
+    }
+
+    .slide-caption {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 8px;
+        transition: opacity 0.5s ease;
+    }
+
+    /* dots + progress */
+    .slide-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 32px;
+        display: flex;
+        gap: 6px;
+        z-index: 3;
+    }
+
+    .dot {
+        height: 2px;
+        width: 18px;
+        background: var(--accent-dim);
+        border-radius: 2px;
+        cursor: pointer;
+        transition: width 0.3s, background 0.3s;
+    }
+
+    .dot.active {
+        width: 32px;
+        background: var(--accent);
+    }
+
+    .slide-arrows {
+        position: absolute;
+        right: 24px;
+        bottom: 16px;
+        display: flex;
+        gap: 6px;
+        z-index: 3;
+    }
+
+    .slide-arr {
+        width: 32px;
+        height: 32px;
+        background: rgba(20, 15, 40, 0.6);
+        border: 0.5px solid var(--border-mid);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 14px;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .slide-arr:hover {
+        background: rgba(40, 30, 70, 0.8);
+        color: var(--accent-glow);
+    }
+
+    .slide-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        background: var(--accent-dim);
+        width: 0%;
+        z-index: 3;
+    }
+
+    /* ══════════════════════════════════════
+       BS PHILOSOPHY
+    ══════════════════════════════════════ */
+    .philosophy-section {
+        padding: 64px 0;
+        border-bottom: 0.5px solid var(--border);
+        text-align: center;
+    }
+
+    .philosophy-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .philosophy-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        margin-bottom: 24px;
+    }
+
+    .philosophy-text {
+        max-width: 680px;
+        margin: 0 auto;
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.9;
+    }
+
+    .philosophy-text p {
+        margin-bottom: 16px;
+    }
+
+    .philosophy-text p:last-child {
+        margin-bottom: 0;
+        font-style: italic;
+        color: var(--accent);
+    }
+
+    /* ══════════════════════════════════════
+       TIMELINE
+    ══════════════════════════════════════ */
+    .timeline-section {
+        padding: 64px 0;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .timeline-header {
+        text-align: center;
+        margin-bottom: 48px;
+    }
+
+    .timeline-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .timeline-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+    }
+
+    .timeline-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .timeline-item {
+        background: var(--bg-surface);
+        padding: 28px 24px;
+        text-align: center;
+    }
+
+    .timeline-year {
+        font-family: 'Syne', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 12px;
+    }
+
+    .timeline-event-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .timeline-event-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════
+       LORE PREVIEW
+    ══════════════════════════════════════ */
+    .lore-preview-section {
+        padding: 64px 0;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .lore-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 32px;
+    }
+
+    .lore-preview-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .lore-preview-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+    }
+
+    .lore-preview-link {
+        font-size: 12px;
+        color: var(--accent);
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    .lore-preview-link:hover { opacity: 0.8; }
+
+    .lore-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .lore-preview-card {
+        background: var(--bg-surface);
+        padding: 24px;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .lore-preview-card:hover { background: var(--bg-raised); }
+
+    .lore-preview-badge {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .badge-quote   { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .badge-event   { background: #0f1f14; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .badge-meme    { background: #1f1508; color: #c4923a; border: 0.5px solid #3a2510; }
+    .badge-history { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .lore-preview-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+
+    .lore-preview-preview {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       TALENT WALL
+    ══════════════════════════════════════ */
+    .talent-section {
+        padding: 64px 0;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .talent-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .talent-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .talent-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+    }
+
+    .talent-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .talent-item {
+        background: var(--bg-surface);
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .talent-name {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .talent-count {
+        font-family: 'Syne', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+    }
+
+    .talent-empty {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .talent-categories {
+        margin-bottom: 32px;
+    }
+
+    .talent-category {
+        margin-bottom: 24px;
+    }
+
+    .talent-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .talent-category-title {
+        font-size: 12px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .talent-category-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .talent-category-item {
+        font-size: 13px;
+        color: var(--text-secondary);
+        padding: 6px 12px;
+        background: var(--bg-raised);
+        border: 0.5px solid var(--border-mid);
+        border-radius: 6px;
+    }
+
+    /* ══════════════════════════════════════
+       QUOTE SECTION
+    ══════════════════════════════════════ */
+    .quote-section {
+        padding: 48px 0;
+        border-bottom: 0.5px solid var(--border);
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .quote-vline {
+        width: 2px;
+        min-height: 80px;
+        background: var(--accent-dim);
+        border-radius: 2px;
+        flex-shrink: 0;
+        opacity: 0.5;
+    }
+
+    .quote-body { flex: 1; }
+
+    .quote-text {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(18px, 2.5vw, 24px);
+        font-weight: 400;
+        color: var(--accent);
+        font-style: italic;
+        line-height: 1.5;
+    }
+
+    .quote-author {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 16px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════════════
+       QUICK LINKS
+    ══════════════════════════════════════ */
+    .ql-section {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--border);
+        gap: 0.5px;
+    }
+
+    .ql-intro {
+        grid-row: span 2;
+        background: var(--bg-surface);
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .ql-intro-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .ql-intro-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
+
+    .ql-intro-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 10px;
+        line-height: 1.6;
+    }
+
+    .ql-item {
+        background: var(--bg-surface);
+        padding: 20px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-decoration: none;
+        transition: background 0.2s;
+        min-height: 100px;
+    }
+
+    .ql-item:hover { background: var(--bg-raised); }
+
+    .ql-item i {
+        font-size: 22px;
+        color: var(--accent-dim);
+        transition: color 0.2s;
+    }
+
+    .ql-item:hover i { color: var(--accent); }
+
+    .ql-item-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .ql-item-label {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .ql-item-arrow {
+        font-size: 12px;
+        color: var(--text-muted);
+        opacity: 0.4;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .ql-item:hover .ql-item-arrow {
+        opacity: 1;
+        transform: translate(2px, -2px);
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+        .hero-ghost { font-size: 120px; }
+        .hero-stats { gap: 24px; }
+        .photo-section { height: 260px; }
+        .slide-content { max-width: 80%; }
+        .ql-section {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
+        }
+        .ql-intro { grid-row: span 1; grid-column: span 2; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-ghost">BS</div>
+    <div class="hero-eyebrow">Baraya Salawasna</div>
+    <h1 class="hero-title">Tongkrongan<br>yang serius.</h1>
+    <p class="hero-tagline">Aktif sejak manusia masih waras.</p>
+    <div class="hero-stats">
+        <div>
+            <div class="hero-stat-num">{{ total_members }}</div>
+            <div class="hero-stat-label">Members</div>
+        </div>
+        <div>
+            <div class="hero-stat-num">{{ active_members }}</div>
+            <div class="hero-stat-label">Active</div>
+        </div>
+        <div>
+            <div class="hero-stat-num">{{ total_photos }}</div>
+            <div class="hero-stat-label">Photos</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── PHOTO SLIDESHOW ── -->
+<section class="photo-section" id="photoSection">
+
+    {% if gallery_photos %}
+        {% for photo in gallery_photos %}
+        <div class="slide {% if forloop.first %}active{% endif %}" data-title="{{ photo.title }}" data-caption="{{ photo.caption }}">
+            <img src="{{ photo.photo.url }}" alt="{{ photo.title }}">
+            <div class="slide-overlay-left"></div>
+            <div class="slide-overlay-bottom"></div>
+        </div>
+        {% endfor %}
+    {% else %}
+    {# Fallback: foto statis dari Unsplash buat preview #}
+    <div class="slide active" data-title="Kumpul Perdana" data-caption="Awal dari segalanya.">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80" alt="Kumpul">
+        <div class="slide-overlay-left"></div>
+        <div class="slide-overlay-bottom"></div>
+    </div>
+    <div class="slide" data-title="Malam Minggu Biasa" data-caption="Yang biasa aja udah cukup.">
+        <img src="https://images.unsplash.com/photo-1543269664-647163009890?w=1200&q=80" alt="Malam">
+        <div class="slide-overlay-left"></div>
+        <div class="slide-overlay-bottom"></div>
+    </div>
+    <div class="slide" data-title="Entah Ke Mana" data-caption="Yang penting bareng.">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80" alt="Jalan">
+        <div class="slide-overlay-left"></div>
+        <div class="slide-overlay-bottom"></div>
+    </div>
+    <div class="slide" data-title="Cerita Lama" data-caption="Diarsipkan, nggak dilupain.">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80" alt="Cerita">
+        <div class="slide-overlay-left"></div>
+        <div class="slide-overlay-bottom"></div>
+    </div>
+    {% endif %}
+
+    <!-- Content overlay -->
+    <div class="slide-content">
+        <div class="slide-label">Gallery</div>
+        <div class="slide-title" id="slideTitle"></div>
+        <div class="slide-caption" id="slideCaption"></div>
+    </div>
+
+    <!-- Dots -->
+    <div class="slide-dots" id="slideDots"></div>
+
+    <!-- Arrows -->
+    <div class="slide-arrows">
+        <div class="slide-arr" id="arrPrev" aria-label="Previous">
+            <i class="ti ti-arrow-left"></i>
+        </div>
+        <div class="slide-arr" id="arrNext" aria-label="Next">
+            <i class="ti ti-arrow-right"></i>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="slide-progress" id="slideProgress"></div>
+</section>
+
+<!-- ── DAILY QUOTE ── -->
+{% if random_quote %}
+<section class="quote-section">
+    <div class="quote-vline"></div>
+    <div class="quote-body">
+        <div class="quote-text">"{{ random_quote.quote }}"</div>
+        {% if random_quote.author %}
+        <div class="quote-author">— {{ random_quote.author }}</div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+<!-- ── BS PHILOSOPHY ── -->
+<section class="philosophy-section">
+    <div class="philosophy-eyebrow">Tentang BS</div>
+    <h2 class="philosophy-title">Baraya Salawasna</h2>
+    <div class="philosophy-text">
+        <p>Bukan organisasi.</p>
+        <p>Bukan komunitas resmi.</p>
+        <p>Hanya sekelompok orang yang memilih untuk tetap berkumpul meskipun hidup membawa mereka ke arah yang berbeda.</p>
+        <p>Baraya Salawasna.</p>
+        <p>Saudara, selama masih ada cerita untuk dibagikan.</p>
+    </div>
+</section>
+
+<!-- ── TIMELINE ── -->
+<section class="timeline-section">
+    <div class="timeline-header">
+        <div class="timeline-eyebrow">Sejarah</div>
+        <h2 class="timeline-title">Timeline BS</h2>
+    </div>
+    <div class="timeline-grid">
+        {% for item in timeline %}
+        <div class="timeline-item">
+            <div class="timeline-year">{{ item.year }}</div>
+            <div class="timeline-event-title">{{ item.title }}</div>
+            <div class="timeline-event-desc">{{ item.description }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ── LORE PREVIEW ── -->
+<section class="lore-preview-section">
+    <div class="lore-preview-header">
+        <div>
+            <div class="lore-preview-eyebrow">Archive</div>
+            <h2 class="lore-preview-title">Lore Terbaru</h2>
+        </div>
+        <a href="{% url 'lore_list' %}" class="lore-preview-link">Lihat Semua →</a>
+    </div>
+    {% if recent_lores %}
+    <div class="lore-preview-grid">
+        {% for lore in recent_lores %}
+        <a href="{% url 'lore_detail' lore.pk %}" class="lore-preview-card">
+            <span class="lore-preview-badge badge-{{ lore.category }}">
+                {{ lore.get_category_display }}
+            </span>
+            <div class="lore-preview-title">{{ lore.title }}</div>
+            <div class="lore-preview-preview">{{ lore.content }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="talent-empty">Belum ada lore. Tambah lewat admin panel!</div>
+    {% endif %}
+</section>
+
+<!-- ── TALENT WALL ── -->
+<section class="talent-section">
+    <div class="talent-header">
+        <div class="talent-eyebrow">Skills</div>
+        <h2 class="talent-title">Talent Wall</h2>
+    </div>
+
+    <!-- Static Categories -->
+    <div class="talent-categories">
+        <div class="talent-category">
+            <div class="talent-category-title">Sports</div>
+            <div class="talent-category-items">
+                <span class="talent-category-item">⚽ Football</span>
+                <span class="talent-category-item">🏐 Volleyball</span>
+                <span class="talent-category-item">🏸 Badminton</span>
+                <span class="talent-category-item">🎱 Billiard</span>
+            </div>
+        </div>
+
+        <div class="talent-category">
+            <div class="talent-category-title">Gaming</div>
+            <div class="talent-category-items">
+                <span class="talent-category-item">🎮 Mobile Legends</span>
+                <span class="talent-category-item">🎮 PUBG</span>
+            </div>
+        </div>
+
+        <div class="talent-category">
+            <div class="talent-category-title">Arts</div>
+            <div class="talent-category-items">
+                <span class="talent-category-item">🎸 Guitar</span>
+                <span class="talent-category-item">🎤 Vocal</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Talent Grid -->
+    {% if talents %}
+    <div class="talent-grid">
+        {% for talent, count in talents %}
+        <div class="talent-item">
+            <span class="talent-name">{{ talent|title }}</span>
+            <span class="talent-count">{{ count }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="talent-empty">Belum ada data talent. Tambah skills di profile member!</div>
+    {% endif %}
+</section>
+
+
+
+<!-- ── QUICK LINKS ── -->
+<section style="padding-top: 40px;">
+    <div class="ql-section">
+        <div class="ql-intro">
+            <div>
+                <div class="ql-intro-eyebrow">Explore</div>
+                <div class="ql-intro-title">Semua ada<br>di sini.</div>
+                <div class="ql-intro-desc">Dari foto tongkrongan sampai lore yang nggak jelas asal-usulnya.</div>
+            </div>
+        </div>
+
+        <a href="{% url 'member_list' %}" class="ql-item">
+            <i class="ti ti-users" aria-hidden="true"></i>
+            <div class="ql-item-bottom">
+                <span class="ql-item-label">Members</span>
+                <span class="ql-item-arrow">↗</span>
+            </div>
+        </a>
+
+        <a href="{% url 'gallery_list' %}" class="ql-item">
+            <i class="ti ti-photo" aria-hidden="true"></i>
+            <div class="ql-item-bottom">
+                <span class="ql-item-label">Gallery</span>
+                <span class="ql-item-arrow">↗</span>
+            </div>
+        </a>
+
+        <a href="{% url 'event_list' %}" class="ql-item">
+            <i class="ti ti-calendar-event" aria-hidden="true"></i>
+            <div class="ql-item-bottom">
+                <span class="ql-item-label">Events</span>
+                <span class="ql-item-arrow">↗</span>
+            </div>
+        </a>
+
+        <a href="{% url 'ai_chat' %}" class="ql-item">
+            <i class="ti ti-robot" aria-hidden="true"></i>
+            <div class="ql-item-bottom">
+                <span class="ql-item-label">AI Assistant</span>
+                <span class="ql-item-arrow">↗</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+(function () {
+    const DURATION = 5000;
+    const slides   = document.querySelectorAll('.slide');
+    const dotsEl   = document.getElementById('slideDots');
+    const titleEl  = document.getElementById('slideTitle');
+    const capEl    = document.getElementById('slideCaption');
+    const progressEl = document.getElementById('slideProgress');
+    let cur = 0, autoTimer, progressStart;
+
+    if (!slides.length) return;
+
+    // Build dots
+    slides.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => { stopAuto(); goTo(i); startAuto(); });
+        dotsEl.appendChild(d);
+    });
+
+    function updateText(idx) {
+        const s = slides[idx];
+        titleEl.style.opacity = '0';
+        capEl.style.opacity   = '0';
+        setTimeout(() => {
+            titleEl.textContent = s.dataset.title   || '';
+            capEl.textContent   = s.dataset.caption || '';
+            titleEl.style.opacity = '1';
+            capEl.style.opacity   = '1';
+        }, 350);
+    }
+
+    function goTo(n) {
+        slides[cur].classList.remove('active');
+        dotsEl.children[cur].classList.remove('active');
+        cur = (n + slides.length) % slides.length;
+        slides[cur].classList.add('active');
+        dotsEl.children[cur].classList.add('active');
+        updateText(cur);
+        resetProgress();
+    }
+
+    function resetProgress() {
+        progressEl.style.transition = 'none';
+        progressEl.style.width = '0%';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            progressEl.style.transition = 'width ' + DURATION + 'ms linear';
+            progressEl.style.width = '100%';
+        }));
+    }
+
+    function stopAuto()  { clearInterval(autoTimer); }
+    function startAuto() {
+        stopAuto();
+        autoTimer = setInterval(() => goTo(cur + 1), DURATION);
+        resetProgress();
+    }
+
+    document.getElementById('arrNext').addEventListener('click', () => {
+        stopAuto(); goTo(cur + 1); startAuto();
+    });
+    document.getElementById('arrPrev').addEventListener('click', () => {
+        stopAuto(); goTo(cur - 1); startAuto();
+    });
+
+    // Init
+    updateText(0);
+    startAuto();
+})();
+</script>
+{% endblock %}

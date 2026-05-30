@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} - BS Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── BACK ── */
+    .event-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-top: 32px;
+        margin-bottom: 48px;
+        display: block;
+        transition: color 0.2s;
+    }
+
+    .event-back:hover { color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .event-detail {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        align-items: start;
+    }
+
+    /* ── LEFT: KONTEN UTAMA ── */
+    .event-main {
+        background: var(--bg-surface);
+        padding: 36px 36px 40px;
+    }
+
+    .event-main-top {
+        padding-bottom: 24px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 28px;
+    }
+
+    .event-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .ebadge {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .ebadge-upcoming  { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+    .ebadge-ongoing   { background: #0d1f12; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .ebadge-completed { background: #1a1a22; color: #5a5a78; border: 0.5px solid #2a2a38; }
+    .ebadge-cancelled { background: #1f0a0a; color: #c46a6a; border: 0.5px solid #3a1010; }
+    .ebadge-category  { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+
+    .event-detail-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(26px, 4vw, 38px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+    }
+
+    /* sections */
+    .event-section {
+        padding-bottom: 24px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 24px;
+    }
+
+    .event-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .event-section-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .event-section-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    .event-participants {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .event-participant-tag {
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        background: var(--bg-raised);
+        border: 0.5px solid var(--border-mid);
+        color: var(--text-secondary);
+    }
+
+    /* ── RIGHT: SIDEBAR INFO ── */
+    .event-sidebar {
+        background: var(--bg-surface);
+        border-left: 0.5px solid var(--border);
+    }
+
+    .event-sidebar-block {
+        padding: 24px 22px;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .event-sidebar-block:last-child { border-bottom: none; }
+
+    .event-sidebar-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    /* big date display */
+    .event-big-date {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .event-big-day {
+        font-family: 'Syne', sans-serif;
+        font-size: 52px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    .event-big-right {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .event-big-month {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+    }
+
+    .event-big-year {
+        font-size: 11px;
+        color: var(--text-muted);
+        opacity: 0.5;
+    }
+
+    .event-big-time {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .event-sidebar-value {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    .event-sidebar-meta {
+        font-size: 11px;
+        color: var(--text-muted);
+        opacity: 0.4;
+        line-height: 1.8;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .event-detail { grid-template-columns: 1fr; }
+        .event-sidebar { border-left: none; border-top: 0.5px solid var(--border); }
+        .event-main { padding: 24px 20px 28px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── BACK ── -->
+<a href="{% url 'event_list' %}" class="event-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Kembali ke Events
+</a>
+
+<!-- ── DETAIL ── -->
+<div class="event-detail">
+
+    <!-- KIRI: konten utama -->
+    <div class="event-main">
+        <div class="event-main-top">
+            <div class="event-badges">
+                <span class="ebadge
+                    {% if event.status == 'upcoming' %}ebadge-upcoming
+                    {% elif event.status == 'ongoing' %}ebadge-ongoing
+                    {% elif event.status == 'completed' %}ebadge-completed
+                    {% else %}ebadge-cancelled{% endif %}">
+                    {{ event.get_status_display }}
+                </span>
+                <span class="ebadge ebadge-category">{{ event.get_category_display }}</span>
+            </div>
+            <div class="event-detail-title">{{ event.title }}</div>
+        </div>
+
+        {% if event.description %}
+        <div class="event-section">
+            <div class="event-section-label">Deskripsi</div>
+            <div class="event-section-text">{{ event.description }}</div>
+        </div>
+        {% endif %}
+
+        {% if event.participants %}
+        <div class="event-section">
+            <div class="event-section-label">Participants</div>
+            <div class="event-participants">
+                {% for participant in participants_list %}
+                <span class="event-participant-tag">{{ participant }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- KANAN: sidebar -->
+    <div class="event-sidebar">
+
+        <!-- Tanggal besar -->
+        <div class="event-sidebar-block">
+            <div class="event-sidebar-label">Tanggal</div>
+            <div class="event-big-date">
+                <div class="event-big-day">{{ event.date|date:"d" }}</div>
+                <div class="event-big-right">
+                    <div class="event-big-month">{{ event.date|date:"F" }}</div>
+                    <div class="event-big-year">{{ event.date|date:"Y" }}</div>
+                </div>
+            </div>
+            <div class="event-big-time">
+                <i class="ti ti-clock" aria-hidden="true" style="font-size:13px"></i>
+                {{ event.date|date:"H:i" }}
+            </div>
+        </div>
+
+        {% if event.location %}
+        <div class="event-sidebar-block">
+            <div class="event-sidebar-label">Lokasi</div>
+            <div class="event-sidebar-value" style="display:flex;align-items:flex-start;gap:6px">
+                <i class="ti ti-map-pin" aria-hidden="true" style="font-size:14px;margin-top:2px;color:var(--accent-dim)"></i>
+                {{ event.location }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Meta -->
+        <div class="event-sidebar-block">
+            <div class="event-sidebar-meta">
+                <div>Dibuat {{ event.created_at|date:"d F Y" }}</div>
+                <div>Diupdate {{ event.updated_at|date:"d F Y" }}</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

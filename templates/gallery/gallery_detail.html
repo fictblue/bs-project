@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ gallery.title }} - BS Gallery{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── BACK ── */
+    .gallery-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-top: 32px;
+        margin-bottom: 40px;
+        display: block;
+        transition: color 0.2s;
+    }
+
+    .gallery-back:hover { color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .gallery-detail {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        align-items: start;
+    }
+
+    /* ── LEFT: FOTO ── */
+    .gallery-photo-wrap {
+        background: #08080c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 480px;
+        position: relative;
+    }
+
+    .gallery-photo-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        max-height: 700px;
+    }
+
+    /* fallback placeholder */
+    .gallery-photo-placeholder {
+        width: 100%;
+        min-height: 480px;
+        background: var(--bg-surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gallery-photo-placeholder i {
+        font-size: 64px;
+        color: var(--text-muted);
+        opacity: 0.1;
+    }
+
+    /* ── RIGHT: INFO ── */
+    .gallery-info {
+        background: var(--bg-surface);
+        padding: 32px 28px 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .gallery-info-top {
+        padding-bottom: 24px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 24px;
+    }
+
+    .gallery-badge {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        display: inline-block;
+        margin-bottom: 14px;
+    }
+
+    .cat-event    { background: #0f1f14; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .cat-mabar    { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .cat-random   { background: #1f1508; color: #c4923a; border: 0.5px solid #3a2510; }
+    .cat-nostalgia{ background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .gallery-info-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+        line-height: 1.15;
+    }
+
+    /* sections */
+    .gallery-section {
+        padding-bottom: 20px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 20px;
+    }
+
+    .gallery-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .gallery-section-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .gallery-section-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.75;
+    }
+
+    .gallery-section-date {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .gallery-meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        color: var(--text-muted);
+        opacity: 0.45;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+        .gallery-detail {
+            grid-template-columns: 1fr;
+        }
+
+        .gallery-photo-wrap,
+        .gallery-photo-placeholder {
+            min-height: 280px;
+        }
+
+        .gallery-photo-wrap img {
+            max-height: 400px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── BACK ── -->
+<a href="{% url 'gallery_list' %}" class="gallery-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Kembali ke Gallery
+</a>
+
+<!-- ── DETAIL ── -->
+<div class="gallery-detail">
+
+    <!-- KIRI: foto -->
+    <div class="gallery-photo-wrap">
+        {% if gallery.photo %}
+        <img src="{{ gallery.photo.url }}" alt="{{ gallery.title }}">
+        {% else %}
+        <div class="gallery-photo-placeholder">
+            <i class="ti ti-photo-off" aria-hidden="true"></i>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- KANAN: info -->
+    <div class="gallery-info">
+
+        <div class="gallery-info-top">
+            <span class="gallery-badge cat-{{ gallery.category }}">
+                {{ gallery.get_category_display }}
+            </span>
+            <div class="gallery-info-title">{{ gallery.title }}</div>
+        </div>
+
+        {% if gallery.caption %}
+        <div class="gallery-section">
+            <div class="gallery-section-label">Caption</div>
+            <div class="gallery-section-text">{{ gallery.caption }}</div>
+        </div>
+        {% endif %}
+
+        {% if gallery.event_date %}
+        <div class="gallery-section">
+            <div class="gallery-section-label">Tanggal</div>
+            <div class="gallery-section-date">{{ gallery.event_date|date:"d F Y" }}</div>
+        </div>
+        {% endif %}
+
+        <div class="gallery-section">
+            <div class="gallery-meta-row">
+                <span>Diupload {{ gallery.created_at|date:"d F Y, H:i" }}</span>
+                <a href="{% url 'gallery_list' %}?category={{ gallery.category }}"
+                   style="color:var(--accent-dim);text-decoration:none;transition:color 0.2s;opacity:1;"
+                   onmouseover="this.style.color='var(--accent)'"
+                   onmouseout="this.style.color='var(--accent-dim)'">
+                    {{ gallery.get_category_display }} lainnya →
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BS - Baraya Salawasna{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --bg-base:    #0c0c10;
+            --bg-surface: #111118;
+            --bg-raised:  #17171f;
+            --border:     #1e1e2a;
+            --border-mid: #2a2a38;
+            --accent:     #9d8fcc;
+            --accent-dim: #4a3f72;
+            --accent-glow:#c4b5fd;
+            --text-primary:   #ede8ff;
+            --text-secondary: #a09ab8;
+            --text-muted:     #625d78;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* ── Navbar ── */
+        .bs-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 0.5px solid var(--border);
+            height: 56px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bs-nav-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bs-brand {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .bs-brand-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-glow);
+            letter-spacing: -0.5px;
+        }
+
+        .bs-brand-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .bs-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bs-nav-links a {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .bs-nav-links a:hover {
+            color: var(--text-secondary);
+            background: var(--bg-surface);
+        }
+
+        .bs-nav-links a.active {
+            color: var(--accent);
+        }
+
+        .bs-nav-admin {
+            font-size: 11px;
+            background: #1a1230;
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 0.5px solid var(--accent-dim);
+            text-decoration: none;
+            margin-left: 8px;
+            transition: background 0.2s;
+        }
+
+        .bs-nav-admin:hover {
+            background: #221840;
+        }
+
+        /* Mobile toggle */
+        .bs-nav-toggle {
+            display: none;
+            background: none;
+            border: 0.5px solid var(--border-mid);
+            color: var(--text-secondary);
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* ── Main ── */
+        .bs-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 28px 80px;
+        }
+
+        /* ── Footer ── */
+        .bs-footer {
+            border-top: 0.5px solid var(--border);
+            background: var(--bg-base);
+            padding: 24px 28px;
+        }
+
+        .bs-footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bs-footer-left {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .bs-footer-right {
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .bs-nav-links { display: none; }
+            .bs-nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 56px;
+                left: 0; right: 0;
+                background: var(--bg-surface);
+                border-bottom: 0.5px solid var(--border);
+                padding: 12px 16px 16px;
+                gap: 2px;
+            }
+            .bs-nav-links.open a { padding: 10px 12px; border-radius: 6px; }
+            .bs-nav-toggle { display: block; }
+            .bs-main { padding: 24px 16px 60px; }
+            .bs-footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="bs-nav">
+        <div class="bs-nav-inner">
+            <a href="{% url 'homepage' %}" class="bs-brand">
+                <span class="bs-brand-logo">BS</span>
+                <span class="bs-brand-sub">Baraya Salawasna</span>
+            </a>
+
+            <div class="bs-nav-links" id="navLinks">
+                <a href="{% url 'homepage' %}">Home</a>
+                <a href="{% url 'member_list' %}">Members</a>
+                <a href="{% url 'gallery_list' %}">Gallery</a>
+                <a href="{% url 'event_list' %}">Events</a>
+                <a href="{% url 'achievement_list' %}">Achievements</a>
+                <a href="{% url 'lore_list' %}">Lore</a>
+                <a href="{% url 'ai_chat' %}">AI Assistant</a>
+                <a href="/baraya-core/" class="bs-nav-admin">Admin</a>
+            </div>
+
+            <button class="bs-nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <i class="ti ti-menu-2"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="bs-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bs-footer">
+        <div class="bs-footer-inner">
+            <div class="bs-footer-left">BS — Baraya Salawasna</div>
+            <div class="bs-footer-right">© {% now "Y" %} BS Project. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        // Mobile nav toggle
+        const toggle = document.getElementById('navToggle');
+        const links  = document.getElementById('navLinks');
+        if (toggle && links) {
+            toggle.addEventListener('click', () => links.classList.toggle('open'));
+        }
+
+        // Active nav link
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.bs-nav-links a').forEach(a => {
+            if (a.getAttribute('href') === currentPath) a.classList.add('active');
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - BS{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-2">🔒 BS Admin Dashboard</h1>
+    <p class="text-gray-600">Kelola semua hal tentang BS</p>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+    <div class="bs-card p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600">{{ total_members }}</div>
+        <div class="text-gray-600 text-sm">Members</div>
+    </div>
+    <div class="bs-card p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600">{{ total_photos }}</div>
+        <div class="text-gray-600 text-sm">Photos</div>
+    </div>
+    <div class="bs-card p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600">{{ total_events }}</div>
+        <div class="text-gray-600 text-sm">Events</div>
+    </div>
+    <div class="bs-card p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600">{{ total_lores }}</div>
+        <div class="text-gray-600 text-sm">Lore Entries</div>
+    </div>
+    <div class="bs-card p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600">{{ total_ai_memories }}</div>
+        <div class="text-gray-600 text-sm">AI Memories</div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <a href="/admin/core/dailyquote/add/" class="bs-card p-6 text-center hover:bg-purple-50 transition">
+        <div class="text-3xl mb-2">💬</div>
+        <div class="font-medium text-gray-800">Add Quote</div>
+    </a>
+    <a href="/admin/members/member/add/" class="bs-card p-6 text-center hover:bg-purple-50 transition">
+        <div class="text-3xl mb-2">👤</div>
+        <div class="font-medium text-gray-800">Add Member</div>
+    </a>
+    <a href="/admin/gallery/gallery/add/" class="bs-card p-6 text-center hover:bg-purple-50 transition">
+        <div class="text-3xl mb-2">📸</div>
+        <div class="font-medium text-gray-800">Upload Photo</div>
+    </a>
+    <a href="/admin/ai_assistant/aimemory/add/" class="bs-card p-6 text-center hover:bg-purple-50 transition">
+        <div class="text-3xl mb-2">🧠</div>
+        <div class="font-medium text-gray-800">Add AI Memory</div>
+    </a>
+</div>
+
+<!-- Recent Items -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Recent Members -->
+    <div class="bs-card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Members</h3>
+        <ul class="space-y-2">
+            {% for member in recent_members %}
+            <li class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <span class="font-medium">{{ member.nickname }}</span>
+                <span class="text-sm text-gray-500">{{ member.created_at|date:"d M Y" }}</span>
+            </li>
+            {% empty %}
+            <li class="text-gray-500">No members yet</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Upcoming Events -->
+    <div class="bs-card p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Upcoming Events</h3>
+        <ul class="space-y-2">
+            {% for event in upcoming_events %}
+            <li class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <span class="font-medium">{{ event.title }}</span>
+                <span class="text-sm text-gray-500">{{ event.date|date:"d M Y" }}</span>
+            </li>
+            {% empty %}
+            <li class="text-gray-500">No upcoming events</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Admin Links -->
+<div class="mt-8 bs-card p-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Django Admin</h3>
+    <p class="text-gray-600 mb-4">Untuk manage lebih detail, buka Django Admin:</p>
+    <a href="/admin/" class="bs-btn bs-btn-primary inline-block">
+        Buka Django Admin
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ member.nickname }} - BS{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── BACK ── */
+    .member-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-top: 32px;
+        margin-bottom: 48px;
+        display: block;
+        transition: color 0.2s;
+    }
+
+    .member-back:hover { color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .member-detail {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* ── LEFT PANEL ── */
+    .member-left {
+        background: var(--bg-surface);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .member-photo {
+        width: 100%;
+        aspect-ratio: 3/4;
+        object-fit: cover;
+        object-position: top;
+        filter: brightness(0.85) saturate(0.75);
+        display: block;
+    }
+
+    .member-nophoto {
+        width: 100%;
+        aspect-ratio: 3/4;
+        background: var(--bg-raised);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .member-nophoto i {
+        font-size: 64px;
+        color: var(--text-muted);
+        opacity: 0.15;
+    }
+
+    .member-left-meta {
+        padding: 20px;
+        border-top: 0.5px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .member-left-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .member-left-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .member-left-value {
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-align: right;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .member-right {
+        background: var(--bg-surface);
+        padding: 36px 36px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* name block */
+    .member-name-block {
+        padding-bottom: 28px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 28px;
+    }
+
+    .member-badges-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .mbadge {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .mbadge-active   { background: #0d1f12; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .mbadge-legend   { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .mbadge-inactive { background: #1a1a22; color: #5a5a78; border: 0.5px solid #2a2a38; }
+    .mbadge-role     { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+    .mbadge-game     { background: #1f1508; color: #c4923a; border: 0.5px solid #3a2510; }
+    .mbadge-award    { background: #1a1508; color: #c4b23a; border: 0.5px solid #3a2e10; }
+
+    .member-nickname {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.05;
+        margin-bottom: 6px;
+    }
+
+    .member-realname {
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    /* Social Media */
+    .member-social {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+    }
+
+    .member-social-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: var(--bg-raised);
+        border: 0.5px solid var(--border-mid);
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .member-social-link:hover {
+        background: var(--accent-dim);
+        border-color: var(--accent-dim);
+        color: var(--accent-glow);
+    }
+
+    .member-social-link i {
+        font-size: 14px;
+    }
+
+    /* sections */
+    .member-section {
+        padding-bottom: 24px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 24px;
+    }
+
+    .member-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .member-section-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .member-bio {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    .member-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .member-tag {
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        background: var(--bg-raised);
+        border: 0.5px solid var(--border-mid);
+        color: var(--text-secondary);
+    }
+
+    .member-empty-tag {
+        font-size: 12px;
+        color: var(--text-muted);
+        opacity: 0.4;
+        font-style: italic;
+    }
+
+    .member-game {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .member-detail {
+            grid-template-columns: 1fr;
+        }
+
+        .member-photo,
+        .member-nophoto {
+            aspect-ratio: 4/3;
+        }
+
+        .member-right {
+            padding: 24px 20px 28px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── BACK ── -->
+<a href="{% url 'member_list' %}" class="member-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Kembali ke Members
+</a>
+
+<!-- ── DETAIL ── -->
+<div class="member-detail">
+
+    <!-- LEFT: foto + meta singkat -->
+    <div class="member-left">
+        {% if member.photo %}
+        <img src="{{ member.photo.url }}" alt="{{ member.nickname }}" class="member-photo">
+        {% else %}
+        <div class="member-nophoto">
+            <i class="ti ti-user" aria-hidden="true"></i>
+        </div>
+        {% endif %}
+
+        <div class="member-left-meta">
+            <div class="member-left-row">
+                <span class="member-left-label">Bergabung</span>
+                <span class="member-left-value">{{ member.join_date|date:"d F Y" }}</span>
+            </div>
+            <div class="member-left-row">
+                <span class="member-left-label">Status</span>
+                <span class="member-left-value">{{ member.get_status_display }}</span>
+            </div>
+            <div class="member-left-row">
+                <span class="member-left-label">Role</span>
+                <span class="member-left-value">{{ member.get_role_display }}</span>
+            </div>
+
+            <!-- Social Media -->
+            <div class="member-left-row">
+                <span class="member-left-label">Social Media</span>
+                <span class="member-left-value">
+                    {% if member.instagram %}
+                    <a href="https://instagram.com/{{ member.instagram }}" target="_blank" rel="noopener noreferrer" class="member-social-link">
+                        <i class="ti ti-brand-instagram" aria-hidden="true"></i>
+                        
+                    </a>
+                    {% endif %}
+                    {% if member.tiktok %}
+                    <a href="https://tiktok.com/@{{ member.tiktok }}" target="_blank" rel="noopener noreferrer" class="member-social-link">
+                        <i class="ti ti-brand-tiktok" aria-hidden="true"></i>
+                        TikTok
+                    </a>
+                    {% endif %}
+                    {% if member.whatsapp %}
+                    <a href="https://wa.me/{{ member.whatsapp }}" target="_blank" rel="noopener noreferrer" class="member-social-link">
+                        <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+                        
+                    </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: konten -->
+    <div class="member-right">
+
+        <!-- Name block -->
+        <div class="member-name-block">
+            <div class="member-badges-row">
+                <span class="mbadge
+                    {% if member.status == 'active' %}mbadge-active
+                    {% elif member.status == 'legend' %}mbadge-legend
+                    {% else %}mbadge-inactive{% endif %}">
+                    {{ member.get_status_display }}
+                </span>
+                <span class="mbadge mbadge-role">{{ member.get_role_display }}</span>
+            </div>
+            <div class="member-nickname">{{ member.nickname }}</div>
+            <div class="member-realname">{{ member.real_name }}</div>
+        </div>
+
+        <!-- Bio -->
+        <div class="member-section">
+            <div class="member-section-label">Bio</div>
+            <div class="member-bio">{{ member.bio|default:"Orangnya males nulis bio." }}</div>
+        </div>
+
+        <!-- Skills -->
+        <div class="member-section">
+            <div class="member-section-label">Skills</div>
+            <div class="member-tags">
+                {% for skill in skills_list %}
+                <span class="member-tag">{{ skill }}</span>
+                {% empty %}
+                <span class="member-empty-tag">Tidak ada skills yang terdaftar.</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Favorite Game -->
+        <div class="member-section">
+            <div class="member-section-label">Favorite Game</div>
+            {% if member.favorite_game %}
+            <div class="member-tags">
+                <span class="mbadge mbadge-game" style="font-size:11px;padding:5px 12px;">
+                    <i class="ti ti-device-gamepad-2" aria-hidden="true" style="margin-right:5px"></i>
+                    {{ member.favorite_game }}
+                </span>
+            </div>
+            {% else %}
+            <span class="member-empty-tag">Entah kenapa nggak ada.</span>
+            {% endif %}
+        </div>
+
+        <!-- Badges -->
+        <div class="member-section">
+            <div class="member-section-label">Badges</div>
+            <div class="member-tags">
+                {% for badge in member.badges.all %}
+                <span class="mbadge mbadge-award">
+                    {{ badge.icon }} {{ badge.name }}
+                </span>
+                {% empty %}
+                <span class="member-empty-tag">Belum dapet badge apapun.</span>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

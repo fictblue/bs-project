@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.bs-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bs-card {
+    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300;
+}
+
+.bs-btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+}
+
+.bs-btn-primary {
+    @apply bg-purple-600 text-white hover:bg-purple-700;
+}
+
+.bs-btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+}

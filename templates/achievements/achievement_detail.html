@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ achievement.title }} - BS Achievements{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── BACK ── */
+    .ach-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding-top: 32px;
+        margin-bottom: 48px;
+        display: block;
+        transition: color 0.2s;
+    }
+
+    .ach-back:hover { color: var(--accent); }
+
+    /* ── WRAPPER ── */
+    .ach-detail {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    /* ── HERO BLOCK ── */
+    .ach-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 48px 32px 40px;
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-surface);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1px;
+    }
+
+    /* radial glow di belakang icon */
+    .ach-hero::before {
+        content: '';
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 160px;
+        height: 160px;
+        background: radial-gradient(circle, rgba(157,143,204,0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .ach-hero-icon {
+        font-size: 72px;
+        line-height: 1;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .ach-badge {
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .cat-mvp_sports { background: #0d1f12; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .cat-raja_mabar { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .cat-legend     { background: #1a1508; color: #c4b23a; border: 0.5px solid #3a2e10; }
+    .cat-chaotic    { background: #1f0a0a; color: #c46a6a; border: 0.5px solid #3a1010; }
+    .cat-talent     { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .ach-hero-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(26px, 4vw, 38px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        margin-bottom: 16px;
+    }
+
+    .ach-hero-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        max-width: 480px;
+    }
+
+    /* ── RECIPIENT BLOCK ── */
+    .ach-recipient-block {
+        border: 0.5px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        background: var(--bg-surface);
+        padding: 24px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .ach-recipient-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .ach-recipient-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--accent);
+    }
+
+    .ach-date-label {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        text-align: right;
+    }
+
+    .ach-date-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        text-align: right;
+    }
+
+    /* ── NAV BOTTOM ── */
+    .ach-nav {
+        margin-top: 32px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .ach-nav-link {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        opacity: 0.4;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: opacity 0.2s, color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .ach-nav-link:hover { opacity: 1; color: var(--accent); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── BACK ── -->
+<a href="{% url 'achievement_list' %}" class="ach-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Kembali ke Achievements
+</a>
+
+<!-- ── DETAIL ── -->
+<div class="ach-detail">
+
+    <!-- Hero -->
+    <div class="ach-hero">
+        <div class="ach-hero-icon">{{ achievement.icon|default:"🏆" }}</div>
+        <span class="ach-badge cat-{{ achievement.category }}">
+            {{ achievement.get_category_display }}
+        </span>
+        <div class="ach-hero-title">{{ achievement.title }}</div>
+        <div class="ach-hero-desc">{{ achievement.description }}</div>
+    </div>
+
+    <!-- Recipient -->
+    <div class="ach-recipient-block">
+        <div>
+            <div class="ach-recipient-label">Recipient</div>
+            <div class="ach-recipient-name">{{ achievement.recipient }}</div>
+        </div>
+        <div>
+            <div class="ach-date-label">Achieved on</div>
+            <div class="ach-date-value">{{ achievement.date_achieved|date:"d F Y" }}</div>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="ach-nav">
+        <a href="{% url 'achievement_list' %}?category={{ achievement.category }}" class="ach-nav-link">
+            <i class="ti ti-filter" aria-hidden="true"></i>
+            {{ achievement.get_category_display }} lainnya
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

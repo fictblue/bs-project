@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lore.title }} - BS Lore{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── BACK LINK ── */
+    .lore-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 32px 0 0;
+        transition: color 0.2s;
+        margin-bottom: 48px;
+        display: block;
+    }
+
+    .lore-back:hover { color: var(--accent); }
+
+    /* ── DETAIL LAYOUT ── */
+    .lore-detail {
+        max-width: 720px;
+    }
+
+    .lore-detail-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .lore-badge {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .badge-quote   { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .badge-event   { background: #0f1f14; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .badge-meme    { background: #1f1508; color: #c4923a; border: 0.5px solid #3a2510; }
+    .badge-history { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .lore-detail-date {
+        font-size: 12px;
+        color: var(--text-muted);
+        opacity: 0.5;
+    }
+
+    .lore-detail-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        margin-bottom: 40px;
+    }
+
+    /* ── DIVIDER ── */
+    .lore-divider {
+        width: 32px;
+        height: 1px;
+        background: var(--accent-dim);
+        margin-bottom: 32px;
+        opacity: 0.5;
+    }
+
+    /* ── CONTENT VARIANTS ── */
+
+    /* Quote: besar, italic, centered feel */
+    .lore-content-quote {
+        padding: 32px 0 32px 28px;
+        border-left: 2px solid var(--accent-dim);
+    }
+
+    .lore-content-quote .lore-quote-mark {
+        font-family: 'Syne', sans-serif;
+        font-size: 64px;
+        color: var(--accent-dim);
+        line-height: 0.6;
+        margin-bottom: 20px;
+        opacity: 0.4;
+        display: block;
+    }
+
+    .lore-content-quote .lore-text {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(18px, 2.5vw, 26px);
+        font-style: italic;
+        color: var(--accent);
+        line-height: 1.55;
+        font-weight: 400;
+    }
+
+    /* Event/Meme/History: prose normal */
+    .lore-content-prose .lore-text {
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.85;
+        white-space: pre-line;
+    }
+
+    /* Meme: ada highlight box di atas */
+    .lore-meme-highlight {
+        background: var(--bg-surface);
+        border: 0.5px solid var(--border-mid);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        font-family: 'Syne', sans-serif;
+        font-size: 13px;
+        color: #c4923a;
+        letter-spacing: 0.5px;
+    }
+
+    /* ── FOOTER META ── */
+    .lore-detail-footer {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 0.5px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .lore-detail-footer-text {
+        font-size: 11px;
+        color: var(--text-muted);
+        opacity: 0.4;
+        letter-spacing: 0.5px;
+    }
+
+    .lore-nav-links {
+        display: flex;
+        gap: 16px;
+    }
+
+    .lore-nav-link {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-decoration: none;
+        opacity: 0.5;
+        transition: opacity 0.2s, color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .lore-nav-link:hover { opacity: 1; color: var(--accent); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── BACK ── -->
+<a href="{% url 'lore_list' %}" class="lore-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Kembali ke Archive
+</a>
+
+<!-- ── DETAIL ── -->
+<div class="lore-detail">
+
+    <!-- Meta -->
+    <div class="lore-detail-meta">
+        <span class="lore-badge badge-{{ lore.category }}">
+            {{ lore.get_category_display }}
+        </span>
+        {% if lore.date_occurred %}
+        <span class="lore-detail-date">{{ lore.date_occurred|date:"d F Y" }}</span>
+        {% endif %}
+    </div>
+
+    <!-- Title -->
+    <h1 class="lore-detail-title">{{ lore.title }}</h1>
+    <div class="lore-divider"></div>
+
+    <!-- Content — tampilan beda per kategori -->
+    {% if lore.category == 'quote' %}
+    <div class="lore-content-quote">
+        <span class="lore-quote-mark">"</span>
+        <div class="lore-text">{{ lore.content }}</div>
+    </div>
+
+    {% elif lore.category == 'meme' %}
+    <div class="lore-content-prose">
+        <div class="lore-meme-highlight">
+            <i class="ti ti-flame" aria-hidden="true" style="margin-right:6px"></i>
+            Meme resmi — sudah terverifikasi absurd.
+        </div>
+        <div class="lore-text">{{ lore.content }}</div>
+    </div>
+
+    {% else %}
+    {# event & history: prose biasa #}
+    <div class="lore-content-prose">
+        <div class="lore-text">{{ lore.content }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Footer meta -->
+    <div class="lore-detail-footer">
+        <span class="lore-detail-footer-text">
+            Diarsipkan {{ lore.created_at|date:"d F Y, H:i" }}
+        </span>
+        <div class="lore-nav-links">
+            <a href="{% url 'lore_list' %}" class="lore-nav-link">
+                <i class="ti ti-layout-list" aria-hidden="true"></i> Semua Lore
+            </a>
+            <a href="?category={{ lore.category }}" class="lore-nav-link">
+                <i class="ti ti-filter" aria-hidden="true"></i> {{ lore.get_category_display }} lainnya
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

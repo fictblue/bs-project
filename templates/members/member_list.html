@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}Members - BS{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── HEADER ── */
+    .member-header {
+        padding: 48px 0 40px;
+        border-bottom: 0.5px solid var(--border);
+        margin-bottom: 40px;
+    }
+
+    .member-eyebrow {
+        font-size: 10px;
+        color: var(--accent-dim);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+    .member-header-title {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(32px, 5vw, 52px);
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1.5px;
+        line-height: 1;
+    }
+
+    .member-header-sub {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+    /* ── GRID ── */
+    .member-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* ── CARD ── */
+    .member-card {
+        background: var(--bg-surface);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        transition: background 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .member-card:hover { background: var(--bg-raised); }
+
+    .member-card-photo {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        object-position: top;
+        filter: brightness(0.85) saturate(0.7);
+        transition: filter 0.3s;
+        display: block;
+    }
+
+    .member-card:hover .member-card-photo {
+        filter: brightness(0.95) saturate(0.85);
+    }
+
+    .member-card-nophoto {
+        width: 100%;
+        height: 200px;
+        background: var(--bg-raised);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 0.5px solid var(--border);
+    }
+
+    .member-card-nophoto i {
+        font-size: 48px;
+        color: var(--text-muted);
+        opacity: 0.2;
+    }
+
+    .member-card-body {
+        padding: 20px 20px 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .member-card-badges-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .mbadge {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .mbadge-active   { background: #0d1f12; color: #6aad82; border: 0.5px solid #1a3a24; }
+    .mbadge-legend   { background: #1e1530; color: #9d8fcc; border: 0.5px solid #2e2248; }
+    .mbadge-inactive { background: #1a1a22; color: #5a5a78; border: 0.5px solid #2a2a38; }
+    .mbadge-role     { background: #0a1a24; color: #5a9fc4; border: 0.5px solid #103040; }
+
+    .member-card-nickname {
+        font-family: 'Syne', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.1;
+        margin-bottom: 3px;
+    }
+
+    .member-card-realname {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .member-card-bio {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.65;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex: 1;
+    }
+
+    .member-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 0.5px solid var(--border);
+    }
+
+    .member-card-join {
+        font-size: 10px;
+        color: var(--text-muted);
+        opacity: 0.5;
+        letter-spacing: 0.5px;
+    }
+
+    .member-card-arrow {
+        font-size: 14px;
+        color: var(--text-muted);
+        opacity: 0.3;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .member-card:hover .member-card-arrow {
+        opacity: 1;
+        color: var(--accent);
+        transform: translate(2px, -2px);
+    }
+
+    /* ── EMPTY ── */
+    .member-empty {
+        text-align: center;
+        padding: 80px 32px;
+        border: 0.5px solid var(--border);
+        border-radius: 12px;
+    }
+
+    .member-empty i {
+        font-size: 40px;
+        color: var(--text-muted);
+        opacity: 0.15;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .member-empty-text {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        color: var(--text-muted);
+        opacity: 0.35;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── HEADER ── -->
+<div class="member-header">
+    <div class="member-eyebrow">Baraya Salawasna</div>
+    <h1 class="member-header-title">The<br>Members</h1>
+    <p class="member-header-sub">Kenalan sama orang-orang di balik tongkrongan ini.</p>
+</div>
+
+<!-- ── GRID ── -->
+{% if members %}
+<div class="member-grid">
+    {% for member in members %}
+    <a href="{% url 'member_detail' member.pk %}" class="member-card">
+
+        {% if member.photo %}
+        <img src="{{ member.photo.url }}" alt="{{ member.nickname }}" class="member-card-photo">
+        {% else %}
+        <div class="member-card-nophoto">
+            <i class="ti ti-user" aria-hidden="true"></i>
+        </div>
+        {% endif %}
+
+        <div class="member-card-body">
+            <div class="member-card-badges-row">
+                <span class="mbadge
+                    {% if member.status == 'active' %}mbadge-active
+                    {% elif member.status == 'legend' %}mbadge-legend
+                    {% else %}mbadge-inactive{% endif %}">
+                    {{ member.get_status_display }}
+                </span>
+                <span class="mbadge mbadge-role">{{ member.get_role_display }}</span>
+            </div>
+
+            <div class="member-card-nickname">{{ member.nickname }}</div>
+            <div class="member-card-realname">{{ member.real_name }}</div>
+
+            {% if member.bio %}
+            <div class="member-card-bio">{{ member.bio }}</div>
+            {% endif %}
+
+            <div class="member-card-footer">
+                <span class="member-card-join">Sejak {{ member.join_date|date:"Y" }}</span>
+                <span class="member-card-arrow">↗</span>
+            </div>
+        </div>
+
+    </a>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="member-empty">
+    <i class="ti ti-users-off" aria-hidden="true"></i>
+    <div class="member-empty-text">Belum ada member.</div>
+</div>
+{% endif %}
+
+{% endblock %}
